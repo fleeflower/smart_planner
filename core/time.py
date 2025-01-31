@@ -7,6 +7,25 @@ class Node:
         self.front = front
         self.next = next
 
+    def remove(self):
+        """从链表中移除当前时间段。"""
+        if self.front:
+            self.front.next = self.next
+        if self.next:
+            self.next.front = self.front
+        self.front = None
+        self.next = None
+
+    def replace(self, new_node):
+        """替换当前节点为新节点。"""
+        if self.front:
+            self.front.next = new_node
+        if self.next:
+            self.next.front = new_node
+        new_node.front = self.front
+        new_node.next = self.next
+        self.front = None
+        self.next = None
 
 class Time(Node):
     """
@@ -57,14 +76,6 @@ class Time(Node):
 
         return front_part, back_part
 
-    def remove(self):
-        """从链表中移除当前时间段。"""
-        if self.front:
-            self.front.next = self.next
-        if self.next:
-            self.next.front = self.front
-        self.front = None
-        self.next = None
 
     def is_conflict(self) -> bool:
         """
