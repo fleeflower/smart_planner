@@ -1,3 +1,4 @@
+import datetime
 class Node:
     """
     链表节点基类，包含前驱和后继节点的引用。
@@ -32,7 +33,7 @@ class Time(Node):
     表示一个时间段，包含开始时间、结束时间、类型及相邻节点引用。
     """
 
-    def __init__(self, start: float, end: float, time_type: str, front: 'Time' = None, next: 'Time' = None):
+    def __init__(self, start: datetime, end: datetime, time_type: str = None, front: 'Time' = None, next: 'Time' = None):
         """
         初始化时间段。
 
@@ -50,7 +51,7 @@ class Time(Node):
         self.type = time_type
         self.start = start
         self.end = end
-        self.length = end - start
+        self.duration = end - start
 
     def split(self, split_time: float) -> ('Time', 'Time'):
         """
@@ -102,25 +103,15 @@ class Time(Node):
                         (self.next and value > self.next.start) or (self.front and value <= self.front.end)):
                     raise ValueError("Time conflict")
             setattr(self, key, value)
+        self.duration = self.end - self.start
 
     def __repr__(self):
         return f"Time({self.start}-{self.end}, {self.type})"
 
 
-class SignTimeFront(Node):
+class SignTime(Node):
     """
     链表头节点，用于标识链表的开始。
-    """
-
-    def __init__(self, item, sign_type: str, front=None, next=None):
-        self.sign_type = sign_type
-        self.load = item
-        super().__init__(front, next)
-
-
-class SignTimeEnd(Node):
-    """
-    链表尾节点，用于标识链表的结束。
     """
 
     def __init__(self, item, sign_type: str, front=None, next=None):
@@ -142,8 +133,8 @@ class BassTime:
         :param ls: 初始节点列表。
         """
         self.name = name
-        self.head = SignTimeFront(ls[0], name)
-        self.tail = SignTimeEnd(ls[-1], name)
+        self.head = SignTime(ls[0], name)
+        self.tail = SignTime(ls[-1], name)
         for i in range(1, len(ls)):
             ls[i - 1].next = ls[i]
             ls[i].front = ls[i - 1]
@@ -248,23 +239,22 @@ class TimeList:
                 right = mid
         return left
 
-    def split(self, *split_times):
+    def split(self, split_time):
         """
         在指定时间点分割时间段。
-
-        :param split_times: 分割时间点（1 或 2 个）。
-        :raises ValueError: 如果分割时间点数量无效。
+        返回分割后的前面的时间段索引。
+        :param split_time: 分割时间点（1个）
         """
-        if len(split_times) not in [1, 2]:
-            raise ValueError("split_times must be 1 or 2")
-
-        for split_time in split_times:
-            for i, time in enumerate(self.time_list):
-                if time.start <= split_time <= time.end:
-                    front_part, back_part = time.split(split_time)
-                    self.time_list[i] = front_part
-                    self.time_list.insert(i + 1, back_part)
-                    break
+        for i, time in enumerate(self.time_list):
+            if time.start < split_time < time.end:
+                front_part, back_part = time.split(split_time)
+                self.time_list[i] = front_part
+                self.time_list.insert(i + 1, back_part)
+                return i
+            elif split_time == time.start:
+                return i-1
+            elif split_time == time.end:
+                return i
 
     def append(self, time: Time):
         """
@@ -325,6 +315,18 @@ class TimeList:
         """
         self.pop(time)
         time.remove()
+    def replace(self, new_time: Time,old_time: Time = None, index:int = None):
+        """
+        替换集合中的时间段。
+        :param index:
+        :param old_time: 要替换的旧时间段。
+        :param new_time: 要替换的新时间段。
+        :raises ValueError: 如果新时间段与现有时间段冲突。
+        """
+        if not index:
+            index = self.time_list.index(old_time)
+        self.time_list[index] = new_time
+        old_time.replace(new_time)
 
     def __sub__(self, other: 'TimeList'):
         """
