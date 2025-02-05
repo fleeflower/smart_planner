@@ -53,7 +53,7 @@ class Time(Node):
         self.end = end
         self.duration = end - start
 
-    def split(self, split_time: float) -> ('Time', 'Time'):
+    def split(self, split_time: datetime) -> ('Time', 'Time'):
         """
         将当前时间段在指定时间点分割为两个相邻时间段。
 
@@ -76,7 +76,26 @@ class Time(Node):
             self.next.front = back_part
 
         return front_part, back_part
-
+    def merge(self, other: 'Time') -> 'Time':
+        """
+        合并两个时间段。
+        :param other:
+        :return:
+        """
+        if self.type != other.type:
+            raise ValueError("Cannot merge different types of time")
+        if self.end != other.start and self.start != other.end:
+            raise ValueError("Cannot merge non-adjacent time")
+        new_time = Time(min(self.start,other.start),max(self.end,other.end),self.type, self.front, self.next)
+        if self.front:
+            self.front.next = new_time
+        if self.next:
+            self.next.front = new_time
+        if other.front:
+            other.front.next = new_time
+        if other.next:
+            other.next.front = new_time
+        return new_time
 
     def is_conflict(self) -> bool:
         """
@@ -255,6 +274,16 @@ class TimeList:
                 return i-1
             elif split_time == time.end:
                 return i
+    def merge(self, time1: Time, time2: Time):
+        """
+        合并两个时间段。
+        :param time1: 第一个时间段。
+        :param time2: 第二个时间段。
+        :return: 合并后的 TimeList 实例。
+        """
+        self.append(time1.merge(time2))
+        self.pop(time2)
+        self.pop(time1)
 
     def append(self, time: Time):
         """
@@ -306,6 +335,7 @@ class TimeList:
         :param time: 要移除的时间段。
         """
         self.time_list.remove(time)
+        return time
 
     def delete(self, time: Time):
         """
@@ -369,7 +399,7 @@ class TimeList:
         """检查时间段是否在集合中。"""
         return item in self.time_list
 
-    def __iter__(self):
+    def __iter__(self)->iter:
         """迭代时间段集合。"""
         return iter(self.time_list)
 

@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55c55f09-6e20-4f3a-94bf-88c2021d9d69" name="更改" comment="refactor(core): 移除重复的remove方法并调整位置">
-      <change afterPath="$PROJECT_DIR$/core/EmergencySorter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Task.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/TaskInput.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/TimeArrenger.py" afterDir="false" />
+    <list default="true" id="55c55f09-6e20-4f3a-94bf-88c2021d9d69" name="更改" comment="refactor(core): 添加任务相关功能并调整时间处理逻辑">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/time.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/TimeList.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/EmergencySorter.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/PrioritySorter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Func.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FuncTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Task.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/TimeArrenger.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/TimeArrenger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/TimeList.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/TimeList.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,15 +36,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.time.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.TimeArrenger.executor": "Run",
+    "Python.time.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\python code\project_planer" />
@@ -83,7 +83,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738322895495</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="refactor(core): 添加任务相关功能并调整时间处理逻辑">
+      <option name="closed" value="true" />
+      <created>1738379442548</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1738379442548</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -100,6 +108,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="第一次提交" />
     <MESSAGE value="refactor(core): 移除重复的remove方法并调整位置" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(core): 移除重复的remove方法并调整位置" />
+    <MESSAGE value="refactor(core): 初始化课表与任务输入函数及类" />
+    <MESSAGE value="refactor(core): 添加任务相关功能并调整时间处理逻辑" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(core): 添加任务相关功能并调整时间处理逻辑" />
   </component>
 </project>

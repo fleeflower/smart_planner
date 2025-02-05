@@ -4,12 +4,13 @@ from TimeList import Time
 class Task(Time):
     def __init__(self, name: str, duration: int, deadline: datetime = None,
                  urgency: str = None, splittable: bool = False, reducible: bool = False,
-                 prerequisites: list['Task'] = None):
+                 prerequisites: list = None, task_id: str = None):
         """
         初始化一个任务对象。
 
         :param name: 任务的名称。
         :param duration: 任务的持续时长。
+        :param task_id: 任务的唯一标识符（可选）。
         :param deadline: 任务的截止日期（可选）。
         :param urgency: 任务的主观紧急状态（可选）。
         :param splittable: 任务是否可拆分。
@@ -18,6 +19,7 @@ class Task(Time):
         """
         super().__init__(start=None, end=None)
         self.name = name
+        self.id = task_id
         self.duration = duration
         self.deadline = deadline
         self.urgency = urgency
@@ -68,3 +70,6 @@ class Task(Time):
         return (f"Task(Name: {self.name}, Duration: {self.duration}, Deadline: {self.deadline}, "
                 f"Urgency: {self.urgency}, Splittable: {self.splittable}, Reducible: {self.reducible}, "
                 f"Prerequisites: {[task.name for task in self.prerequisites]}, Status: {status})")
+
+    def __lt__(self,other):
+        return self.priority<other.priority
