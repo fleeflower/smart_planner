@@ -1,5 +1,14 @@
 import datetime
+from datetime import datetime, timedelta, time
 from TimeList import Time
+
+URGENCY_MAP = {
+    'critical': 5,  # 紧急且重要
+    'high': 4,
+    'medium': 3,
+    'low': 2,
+    'optional': 1  # 可选任务
+}
 
 class Task(Time):
     def __init__(self, name: str, duration: int, deadline: datetime = None,
@@ -17,7 +26,7 @@ class Task(Time):
         :param reducible: 任务是否可缩短。
         :param prerequisites: 任务的前置任务列表（可选）。
         """
-        super().__init__(start=None, end=None)
+        super().__init__(start=None, end=None,time_type='task')
         self.name = name
         self.id = task_id
         self.duration = duration
@@ -51,16 +60,21 @@ class Task(Time):
         """
         return self.deadline and current_time > self.deadline and not self.completed
 
-    def remaining_time(self, current_time: datetime):
+    def remaining_time(self):
         """
         计算任务的剩余时间。
-
-        :param current_time: 当前时间。
         :return: 如果任务有截止日期，则返回剩余时间，否则返回None。
         """
-        if self.deadline:
-            return self.deadline - current_time//datetime.timedelta(hours=1)
-        return None
+        time_anchor = datetime.now()
+        now = time_anchor or datetime.now()
+        if self.deadline.tzinfo:
+            anchor_time = now.astimezone(self.deadline.tzinfo)
+        else:
+            anchor_time = now.replace(tzinfo=None)
+
+        delta = self.deadline - anchor_time
+        remaining_min = delta.total_seconds() / 60
+        return remaining_min
 
     def __str__(self):
         """

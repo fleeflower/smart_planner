@@ -4,13 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55c55f09-6e20-4f3a-94bf-88c2021d9d69" name="更改" comment="refactor(core): 添加任务相关功能并调整时间处理逻辑">
+    <list default="true" id="55c55f09-6e20-4f3a-94bf-88c2021d9d69" name="更改" comment="style: 修正None判断条件">
+      <change afterPath="$PROJECT_DIR$/data/Calendar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/ClassTable.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/TaskList.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/EmergencySorter.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/PrioritySorter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Func.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FuncTools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Task.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/FuncTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FuncTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/PrioritySorter.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/PrioritySorter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Task.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_structure/Task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/TaskInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/TaskInput.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/TimeArrenger.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/TimeArrenger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/TimeList.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/TimeList.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/TimeList.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_structure/TimeList.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/config.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,20 +41,53 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.TimeArrenger.executor": "Run",
-    "Python.time.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.TimeArrenger.executor&quot;: &quot;Run&quot;,
+    &quot;Python.code3.executor&quot;: &quot;Run&quot;,
+    &quot;Python.time.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/pythoncode&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\python code\project_planer\data_struct" />
+      <recent name="E:\python code\project_planer\data" />
       <recent name="E:\python code\project_planer" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="code3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="project_planer" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../pythoncode/test/.venv/Scripts" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../pythoncode/test/.venv/Scripts/code3.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.code3" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -91,7 +129,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738379442548</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="refactor(core): 添加任务相关功能并调整时间处理逻辑">
+      <option name="closed" value="true" />
+      <created>1738738716966</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1738738716966</updated>
+    </task>
+    <task id="LOCAL-00005" summary="style: 修正None判断条件">
+      <option name="closed" value="true" />
+      <created>1738738797751</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1738738797751</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -110,6 +164,7 @@
     <MESSAGE value="refactor(core): 移除重复的remove方法并调整位置" />
     <MESSAGE value="refactor(core): 初始化课表与任务输入函数及类" />
     <MESSAGE value="refactor(core): 添加任务相关功能并调整时间处理逻辑" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(core): 添加任务相关功能并调整时间处理逻辑" />
+    <MESSAGE value="style: 修正None判断条件" />
+    <option name="LAST_COMMIT_MESSAGE" value="style: 修正None判断条件" />
   </component>
 </project>

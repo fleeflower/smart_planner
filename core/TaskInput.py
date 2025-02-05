@@ -1,4 +1,4 @@
-from core.Task import Task
+from data_structure.Task import Task
 
 
 def get_task_list()->list[Task]:

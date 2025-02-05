@@ -1,15 +1,9 @@
 import heapq
-from abc import ABC, abstractmethod
-from collections import deque
-from datetime import datetime, timedelta, time
-from heapq import heappush, heappop
-import TimeList
-from core.Task import Task
+from datetime import datetime, timedelta
+from data_structure.Task import Task
 import datetime
-import Task
-import TimeList as tl
+from data_structure import Task, TimeList, TimeList as tl
 import TaskInput as ti
-import FuncTools
 import PrioritySorter as ps
 
 
@@ -17,29 +11,22 @@ import PrioritySorter as ps
 智能时间分配引擎核心模块
 """
 
-# 常量定义每日的开始和结束时间
-TIME_START = datetime.time(6, 0)  # 6点
-TIME_END = datetime.time(2, 0)
 
-class AllocationStrategy(ABC):
-    """策略模式抽象类（扩展点1）"""
-
-    @abstractmethod
-    def allocate(self,
-                 task: TimeList,
-                 sparetimes: TimeList):
-        pass
-
-
-class PomodoroAllocator(AllocationStrategy):
-    """默认策略：基于番茄钟的分配"""
+class PomodoroAllocator:
+    """
+    默认策略：基于番茄钟的分配
+    """
 
     def __init__(self, cycle: int = 45, min_chunk: int = 25):
         self.cycle = cycle
         self.min_chunk = min_chunk
 
-    def _split_task(self, task: Task) -> list[Task]:
-        """拆分任务为番茄钟块"""
+    def split_task(self, task: Task) -> list[Task]:
+        """
+        拆分任务为番茄钟块
+        param task: 待拆分的任务
+        return: 番茄钟块列表
+        """
         if not task.splitable:
             return [task]
 
@@ -53,40 +40,26 @@ class PomodoroAllocator(AllocationStrategy):
             chunks.append(chunk)
             remaining -= chunk
 
-        return [
-            Task(
-                task_id=f"{task.task_id}_part{i + 1}",
-                name=f"{task.name} (Part {i + 1})",
-                duration=chunk,
-                deadline=task.deadline,
-                urgency=task.urgency,
-                prerequisites= task.prerequisites if i == 0 else [f"{task.task_id}_part{i}"],
-            )
-            for i, chunk in enumerate(chunks)
-        ]
-
-    def allocate(self, tasks, slots):
-        # 实现细节略，包含：
-        # 1. 任务拆分
-        # 2. 依赖解析
-        # 3. 时间匹配
-        # 4. 分配验证
-        pass
-
+        split_list = []
+        split_time = task.start
+        for chunk in chunks:
+            split_time += timedelta(minutes = chunk)
+            split_list.extend(task.split(split_time))
+        
+        return list(set(split_list))
+        
 
 class DayTimeEngine:
     """分配引擎核心"""
 
-    def __init__(self,day_name: str, strategy: AllocationStrategy = None):
-        self.strategy = strategy or PomodoroAllocator()
+    def __init__(self,day):
         self.task_list = []
         self.class_table = []
-        self.day = None
-        self.day_name = day_name
-
+        self.day = day
+        
         self.register_slots()
-        self.day = self.init_day(TIME_START, TIME_END)
-        self.slots = self.init_free_slots()
+        self.slots = self._init_free_slots()
+        self.unallocated_tasks = []
 
 
     def register_slots(self):
@@ -94,20 +67,11 @@ class DayTimeEngine:
         得到任务输入
         :return:
         """
-        self.class_table = ti.get_class_list()
-        self.task_list = ti.get_task_list()
+        self.class_table = ti.get_class_list().copy()
+        self.task_list = ti.get_task_list().copy()
 
-    def init_day(self,DAY_START: datetime.datetime, DAY_END: datetime.datetime) -> tl.BassTime:
-        """
-        初始化一天的课表
-        :param DAY_START: 常量一日的开始时间
-        :param DAY_END: 常量一日的结束时间
-        :return:
-        """
-        day_time = tl.Time(DAY_START, DAY_END, time_type="free")
-        self.day = tl.BassTime(self.day_name, [day_time])
 
-    def init_free_slots(self):
+    def _init_free_slots(self) -> tl.TimeList:
         """
         初始化空闲时间
         切割一日
@@ -125,7 +89,7 @@ class DayTimeEngine:
         return tl.TimeList([time for time in day_time if time.time_type == "free"])
 
     @staticmethod
-    def smart_split(task: Task, free_slots):
+    def _smart_split(task: Task, free_slots):
         """根据可用时间段动态拆分任务"""
         if not task.splitable:
             return [task]
@@ -156,7 +120,7 @@ class DayTimeEngine:
         return chunks
 
     @staticmethod
-    def resolve_dependencies(task_list: list[Task], priority: dict):
+    def _resolve_dependencies(task_list: list[Task], priority: dict):
         """处理任务依赖关系，按优先级返回可执行顺序"""
         task_map = {t.task_id: t for t in task_list}
         in_degree = {t.task_id: len(t.prerequisites) for t in task_list}
@@ -182,25 +146,28 @@ class DayTimeEngine:
 
         return ordered_tasks
 
-    def allocate(self):
-        """优化后的时间分配核心算法"""
+    def allocate(self, free_slots: tl.TimeList = None, task_list: list[Task] = None):
+        """时间分配核心算法"""
+        if not free_slots:
+            free_slots = self.slots
+        if not task_list:
+            task_list = self.task_list
         # 阶段1：处理依赖关系并排序
         try:
-            priority_weights = ps.get_priority(self.task_list) # 示例优先级计算
-            ordered_tasks = self.resolve_dependencies(self.task_list, priority_weights)
+            priority_weights = ps.get_priority(task_list) # 示例优先级计算
+            ordered_tasks = self._resolve_dependencies(task_list, priority_weights)
         except ValueError as e:
             print(f"依赖解析失败: {str(e)}")
-            return [], self.task_list  # 返回空分配和全部未分配任务
+            return [], task_list  # 返回空分配和全部未分配任务
 
         # 阶段2：准备可分配时间槽（按开始时间排序）
-        free_slots = tl.TimeList(self.slots.time_list, order="start")
         allocated = []
         unallocated = []
 
         # 阶段3：动态分配主循环
         for task in ordered_tasks:
             # 智能任务拆分（考虑当前剩余时间段）
-            suitable_slots = TimeList.TimeList([s for s in free_slots if s.duration >= task.duration and  (not task.deadline or s.end <= task.deadline)])
+            suitable_slots = TimeList.TimeList([s for s in free_slots if s.duration >= task.duration and (not task.deadline or s.end <= task.deadline)])
             sub_tasks = self.smart_split(task,suitable_slots) if task.splitable else [task]
 
             for sub_task in sub_tasks:
@@ -228,16 +195,83 @@ class DayTimeEngine:
                         best_fit = remaining
                         best_slot = slot
 
-                if best_slot != None:
+                if best_slot is not None:
                     # 找到合适的时间槽
                     selected_slot = free_slots.pop(best_slot)
-                    selected_slot,_ = selected_slot.split(selected_slot.start+timedelta(minutes=sub_task.duration))
+                    selected_slot,remain_slot = selected_slot.split(selected_slot.start+timedelta(minutes=sub_task.duration))
                     selected_slot.replace(sub_task)
                     allocated.append(sub_task)
+                    free_slots+=remain_slot
                 else:
                     unallocated.append(sub_task)
 
         return allocated, unallocated
+    
+    def renew_list(self,cover = True):
+        """
+        当日程链表更新后采用次函数更新所有类列表
+        会直接覆盖未分配任务列表
+        :return: 
+        """
+        new_task_list = []
+        new_free_slots = []
+        for mt in self.day:
+            if mt.time_type == "free":
+                if mt.next.time_typr == "free":
+                    mt.merge(mt.next)
+                new_free_slots.append(mt)
+            if mt.time_type == "task":
+                new_task_list.append(mt.task)
+        if cover:
+            if len(self.unallocated_tasks)>0:
+                raise ValueError("cannot cover with unallocated tasks")
+            else:
+                self.task_list = new_task_list
+                self.slots = tl.TimeList(new_free_slots)
+        return new_task_list,tl.TimeList(new_free_slots)
+        
+    def add_task(self, task: Task):
+        """
+        添加任务到日程表
+        :param task:
+        :return:
+        """
+        self.task_list.append(task)
+        _,self.unallocated = self.allocate(task_list=[task],free_slots=self.slots)
+
+    def remove_task(self, task: Task):
+        """
+        从日程表移除任务
+        :param task:
+        :return:
+        """
+        self.task_list.remove(task)
+        for mt in self.day:
+            if mt == task:
+                new_node =  tl.Time(task.start, task.end, time_type="free")
+                mt.replace(new_node)
+                self.slots.append(new_node)
+                if new_node.next and new_node.next.time_type == "free":
+                    self.slots.merge(new_node,new_node.next)
+                if new_node.front and new_node.front.time_type == "free":
+                    self.slots.merge(new_node.front,new_node)
+                break
+
+    def modify_task(self, task: Task, **kwargs):
+        """
+        修改任务信息
+        :param task:
+        :param kwargs:
+        :return:
+        """
+        pass
+
+
+
+
+
+                
+        
 
 
 # 扩展点示例（伪代码实现）
@@ -253,16 +287,3 @@ class DayTimeEngine:
 #         return 0.8
 #
 #
-# class DynamicAdjuster:
-#     """动态调整器（扩展点5）"""
-#
-#     def reallocate(self,
-#                    engine: TimeEngine,
-#                    changed_tasks: List[Task]):
-#         """
-#         当任务状态变化时重新分配
-#         :param changed_tasks: 发生变化的任务列表
-#         """
-#         # 伪代码：增量式重新分配逻辑
-#         pass
-

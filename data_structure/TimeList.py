@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta, time
 class Node:
     """
     链表节点基类，包含前驱和后继节点的引用。
@@ -18,7 +18,11 @@ class Node:
         self.next = None
 
     def replace(self, new_node):
-        """替换当前节点为新节点。"""
+        """
+        替换当前节点为新节点。
+        :param new_node: 新节点。
+        :return 新节点
+        """
         if self.front:
             self.front.next = new_node
         if self.next:
@@ -27,13 +31,14 @@ class Node:
         new_node.next = self.next
         self.front = None
         self.next = None
+        return new_node
 
 class Time(Node):
     """
     表示一个时间段，包含开始时间、结束时间、类型及相邻节点引用。
     """
 
-    def __init__(self, start: datetime, end: datetime, time_type: str = None, front: 'Time' = None, next: 'Time' = None):
+    def __init__(self, start: datetime.time, end: datetime.time, time_type: str = None, front: 'Time' = None, next: 'Time' = None):
         """
         初始化时间段。
 
@@ -76,6 +81,7 @@ class Time(Node):
             self.next.front = back_part
 
         return front_part, back_part
+
     def merge(self, other: 'Time') -> 'Time':
         """
         合并两个时间段。
@@ -142,6 +148,9 @@ class SignTime(Node):
 class BassTime:
     """
     链表队列，用于管理时间段节点。
+    可以完成以下操作：
+    - append(new_node): 在链表末尾追加新节点。
+    - __getitem__(index): 获取链表中指定索引的节点。
     """
 
     def __init__(self, name, ls: list[Node]):
@@ -225,6 +234,19 @@ class BassTime:
 class TimeList:
     """
     管理有序时间段集合。
+    操作:
+    - append(time): 追加时间段到集合中。
+    - extend(time_list): 扩展时间段集合。
+    - pop(time): 从集合中移除时间段。
+    - delete(time): 从集合和链表中移除时间段。
+    - replace(new_time,old_time=None,index=None): 替换集合中的时间段。
+    - split(split_time): 在指定时间点分割时间段。
+    - merge(time1,time2): 合并两个时间段。
+    - is_in(time): 检查时间段是否在集合中。
+    - find(time_point): 查找包含指定时间点的时间段。
+    - __contains__(time): 检查时间段是否在集合中。
+    - __iter__(): 迭代时间段集合。
+    - __getitem__(item): 获取指定索引的时间段。
     """
 
     def __init__(self, initial_times: list[Time], order: str = 'start'):
