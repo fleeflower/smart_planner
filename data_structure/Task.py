@@ -1,6 +1,8 @@
 import datetime
 from datetime import datetime, timedelta, time
-from TimeList import Time
+from logging import NullHandler
+
+from data_structure.TimeList import Time
 
 URGENCY_MAP = {
     'critical': 5,  # 紧急且重要
@@ -87,3 +89,21 @@ class Task(Time):
 
     def __lt__(self,other):
         return self.priority<other.priority
+
+class StaticTask(Time):
+    """
+    课程，包括开始时间，结束时间，以及具体日期或者循环周期（或特别的以周循环）
+    """
+    def __init__(self,start: datetime.time, end: datetime.time,name:str,other_detail:dict = None,start_date:datetime.date = datetime.today(),end_date:datetime.date = datetime.today(),circle:int = None,circle_in_week:int = None,is_fine_for_task:bool = False):
+        super().__init__(start,end,time_type='StaticTask')
+        self.name = name
+        self.other_detail = other_detail
+        self.start_date = start_date
+        self.end_date = end_date
+        self.circle = circle
+        self.circle_in_week = circle_in_week
+        self.is_fine_for_task = is_fine_for_task
+
+    def __str__(self):
+        return f"StaticTask(Name: {self.name}, Start: {self.start}, End: {self.end}, Start_date: {self.start_date}, End_date: {self.end_date}, Circle: {self.circle}, Circle_in_week: {self.circle_in_week}, Is_fine_for_task: {self.is_fine_for_task})"
+

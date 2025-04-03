@@ -56,7 +56,7 @@ class Time(Node):
         self.type = time_type
         self.start = start
         self.end = end
-        self.duration = end - start
+        self.duration = 0 #TODO: 计算时长
 
     def split(self, split_time: datetime) -> ('Time', 'Time'):
         """

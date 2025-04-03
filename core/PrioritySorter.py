@@ -17,7 +17,6 @@ class PrioritySorter:
     @staticmethod
     def build_task_matrix(tasks: list[Task]) -> np.ndarray:
         """
-        安全构建任务矩阵（带类型校验和异常处理）
 
         参数:
         tasks : 包含Task对象的可迭代集合
