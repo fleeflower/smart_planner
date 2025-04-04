@@ -1,4 +1,6 @@
 import os
+import re
+
 from data_structure.Task import Task
 from data_structure.Task import StaticTask
 import datetime
@@ -8,20 +10,25 @@ get_from_file=True
 get_from_web=False
 cookies = {
     'route': 'ad5adf69d86a66008f20cbfbb599eb2e',
+    'GS_SESSIONID': '3e8fe2045c4ee1b8e0c28266236dc067',
     'EMAP_LANG': 'zh',
     'THEME': 'indigo',
-    'GS_SESSIONID': '0afe05e236c8e568dabdcbb53f723d3b',
-    '_WEU': 'BzL4a_GPS_qNr*1S1YfDlzKnHsvjPNUMCARFM6xEwJQC9LqlA*8OPXlWwp0zQu18vSRum7ov_D8UWpJi4wZvQwSl4al0JeCR7zXkATCs0yR3c*vE9EYs9vrRp2dIokv4gJFT*h75ea915bvh8veRIzp*rhiR5EpSacIbaelknkir57uGCjpUSozEJ*R4M*QooLJjHqUo0llPNfRsS6zBNo..',
+    '_WEU': '_FPJX3V4WDhAUAleICL_hXwyQyPL1Xjgt0kUkcobbcQM3Eqlu3xkvep4AsCz26iSSZ149k714OQfb8WHsMI1xYg4dJjAo8kyM4vmK2HsD8LqKHwa11NpkuQE26eCcNZgg7DJBUfa7E*YY9bm*qrec7lINpyf1JVMugylVq_d0kQemJp1XI*ygDYu_1ME8szWnxH*6ll8mbP2RZJ7lrqDDciFzqRnqcbT',
     '_ga': 'GA1.1.1217582223.1742092774',
     '_ga_4CSM3ZYBN3': 'GS1.1.1742092774.1.0.1742092994.0.0.0',
-    'JSESSIONID': 'xvD6QSKhk8Pv5EFcuoDqNeIBgQkXaW2F7sqLSZKs5_S2qef1cBSt!-517359854',
+    'amp.locale': 'zh_CN',
+    'asessionid': '28e035f3-474a-406d-9432-2d5f81ec13f7',
+    'iPlanetDirectoryPro': 'ITb1L6fcfCildtwWN2shpM',
+    'JSESSIONID': 'o_oBOzfZbdcGnxPpxDoewQEnizfAXFoc9F3v_yRPr7oWufP0Wve-!-14817976',
 }
 
 headers = {
-    'Accept': '*/*',
+    'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Connection': 'keep-alive',
-    'Referer': 'https://ehall.seu.edu.cn/jwapp/sys/bykbseuMobile/*default/index.do?ticket=ST-10064978-Zgecx15hzwkUajQ8mlP88erdjok-ecs-0002',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Origin': 'https://ehall.seu.edu.cn',
+    'Referer': 'https://ehall.seu.edu.cn/jwapp/sys/wdkb/*default/index.do?t_s=1743777380126&EMAP_LANG=zh&THEME=indigo&amp_sec_version_=1&gid_=NEtFZmV6N0dYeWRCZjJDdFp2bU1RRHNWQm5VU3BsODhnd0pGcmZLTnhkOG8zWVF2VWZtYThoeFNGSXdzWmsya01mZkh5WTdBeDlYVlJCVHhzNkxLVlE9PQ',
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',
@@ -30,8 +37,9 @@ headers = {
     'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Microsoft Edge";v="134"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': 'route=ad5adf69d86a66008f20cbfbb599eb2e; EMAP_LANG=zh; THEME=indigo; GS_SESSIONID=0afe05e236c8e568dabdcbb53f723d3b; _WEU=BzL4a_GPS_qNr*1S1YfDlzKnHsvjPNUMCARFM6xEwJQC9LqlA*8OPXlWwp0zQu18vSRum7ov_D8UWpJi4wZvQwSl4al0JeCR7zXkATCs0yR3c*vE9EYs9vrRp2dIokv4gJFT*h75ea915bvh8veRIzp*rhiR5EpSacIbaelknkir57uGCjpUSozEJ*R4M*QooLJjHqUo0llPNfRsS6zBNo..; _ga=GA1.1.1217582223.1742092774; _ga_4CSM3ZYBN3=GS1.1.1742092774.1.0.1742092994.0.0.0; JSESSIONID=xvD6QSKhk8Pv5EFcuoDqNeIBgQkXaW2F7sqLSZKs5_S2qef1cBSt!-517359854',
+    # 'Cookie': 'route=ad5adf69d86a66008f20cbfbb599eb2e; GS_SESSIONID=3e8fe2045c4ee1b8e0c28266236dc067; EMAP_LANG=zh; THEME=indigo; _WEU=_FPJX3V4WDhAUAleICL_hXwyQyPL1Xjgt0kUkcobbcQM3Eqlu3xkvep4AsCz26iSSZ149k714OQfb8WHsMI1xYg4dJjAo8kyM4vmK2HsD8LqKHwa11NpkuQE26eCcNZgg7DJBUfa7E*YY9bm*qrec7lINpyf1JVMugylVq_d0kQemJp1XI*ygDYu_1ME8szWnxH*6ll8mbP2RZJ7lrqDDciFzqRnqcbT; _ga=GA1.1.1217582223.1742092774; _ga_4CSM3ZYBN3=GS1.1.1742092774.1.0.1742092994.0.0.0; amp.locale=zh_CN; asessionid=28e035f3-474a-406d-9432-2d5f81ec13f7; iPlanetDirectoryPro=ITb1L6fcfCildtwWN2shpM; JSESSIONID=o_oBOzfZbdcGnxPpxDoewQEnizfAXFoc9F3v_yRPr7oWufP0Wve-!-14817976',
 }
+
 
 def switch_mode(mode:str)->None:
     global get_from_file,get_from_web
@@ -54,6 +62,24 @@ def calculate_week_number(start_date_str):
     delta = current_date - start_date
     week_number = (delta.days // 7) + 1
     return week_number
+
+
+import datetime
+
+
+def get_week_dates(start_date_str, week_num):
+    """
+    :param start_date_str: 学期开始日期字符串 (格式：YYYY-MM-DD)
+    :param week_num: 要获取的第几周
+    :return: 该周的起始日期和结束日期 (datetime.date 元组)
+    """
+    start_date_str = start_date_str.split()[0]
+    start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d').date()
+    start_of_week = start_date + datetime.timedelta(days=(week_num - 1) * 7)
+    end_of_week = start_of_week + datetime.timedelta(days=6)
+    return start_of_week, end_of_week
+
+
 def get_config_list()->dict:
     if os.path.exists("config.json"):
         with open("config.json") as file:
@@ -71,7 +97,7 @@ def get_config_list()->dict:
         )
         data = {}
         json_data = json.loads(response.text)
-        data['XQKSRQ'] = json_data['datas']['cxxljc']['rows'][0]['XQKSRQ']
+        data['when_semester_start'] = json_data['datas']['cxxljc']['rows'][0]['XQKSRQ']
         response = requests.get(
             'https://ehall.seu.edu.cn/jwapp/sys/bykbseuMobile/modules/wdkb/cxjcsj.do',
             cookies=cookies,
@@ -115,22 +141,31 @@ def get_task_list()->list[Task]:
 def get_class_list()->list[StaticTask]:
     if get_from_web:
         config_list = get_config_list()
-        params = {
-            'XNXQDM': '2024-2025-3',
-            'SKZC': calculate_week_number(config_list['XQKSRQ']),
-        }
+        data = '*order=%2BKSJC&XNXQDM=2024-2025-3&SKZC=6'
 
-        response = requests.get(
-            'https://ehall.seu.edu.cn/jwapp/sys/bykbseuMobile/modules/wdkb/cxxszhxqkb.do',
-            params=params,
+        response = requests.post(
+            'https://ehall.seu.edu.cn/jwapp/sys/wdkb/modules/xskcb/xskcb.do',
             cookies=cookies,
             headers=headers,
+            data=data,
         )
         json_data = json.loads(response.text)
         task_list = []
-        for row in json_data['datas']['cxxszhxqkb']['rows']:
-            if row['SKXQ'] == datetime.datetime.weekday(datetime.datetime.now())+1:
-                task_list.append(StaticTask(start=datetime.datetime.strptime(config_list['DM_list'][str(row['KSJC'])]['start'], '%H:%M').time(), end=datetime.datetime.strptime(config_list['DM_list'][str(row['JSJC'])]['end'],'%H:%M').time(), name=row['KCM']))
+        for row in json_data['datas']['xskcb']['rows']:
+            # if row['SKXQ'] == datetime.datetime.weekday(datetime.datetime.now())+1:
+            start_week, end_week = re.findall(r'\d+', row['ZCMC'])
+            task_list.append(StaticTask(start=datetime.datetime.strptime(config_list['DM_list'][str(row['KSJC'])]['start'], '%H:%M').time(), end=datetime.datetime.strptime(config_list['DM_list'][str(row['JSJC'])]['end'],'%H:%M').time(), name=row['KCM'],start_date=get_week_dates(config_list['when_semester_start'],int(start_week))[0],end_date=get_week_dates(config_list['when_semester_start'],int(end_week))[1],circle_in_week=row['SKXQ']))
+        with open("test_list.json", "w") as f:
+            json.dump([{
+                'start': task.start.isoformat(),
+                'end': task.end.isoformat(),
+                'name': task.name,
+                'start_date': task.start_date.strftime('%Y-%m-%d'),
+                'end_date': task.end_date.strftime('%Y-%m-%d'),
+                'circle_in_week': task.circle_in_week,
+                'circle': task.circle,
+                'is_fine_for_task': task.is_fine_for_task
+            } for task in task_list], f, ensure_ascii=False)
         return task_list
     if get_from_file:
         with open("task_list.json") as file:
@@ -146,5 +181,6 @@ def get_class_list()->list[StaticTask]:
 
 if __name__ == '__main__':
     switch_mode("web")
-    data=get_class_list()
-    print(data)
+    datas=get_class_list()
+    for data in datas:
+        print(data)
